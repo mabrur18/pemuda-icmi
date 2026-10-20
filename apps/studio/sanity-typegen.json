@@ -1,0 +1,10 @@
+{
+  "path": [
+    "./schemaTypes/**/*.{ts,tsx}",
+    "../web/app/**/*.{ts,tsx}",
+    "../web/components/**/*.{ts,tsx}",
+    "../web/lib/**/*.{ts,tsx}"
+  ],
+  "schema": "schema.json",
+  "generates": "../web/types/sanity.types.ts"
+}

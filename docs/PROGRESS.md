@@ -10,8 +10,8 @@ Domain: `pemudaicmi-kotabekasi.org`
 | Tahap | Nama Tahap | Prioritas / ID Terkait | Status | Catatan / Tanggal Selesai |
 | :--- | :--- | :--- | :--- | :--- |
 | **Tahap 0** | Fondasi repositori & Monorepo pnpm | Fondasi (A5) | **Selesai** | Monorepo pnpm, Next.js, Sanity Studio v3, CI workflow, Prettier, Vitest, lint/typecheck/build/test lulus 100% (2026-10-20) |
-| **Tahap 1** | Skema Sanity dan Studio | FR-201, FR-202, FR-203 | **Siap Dikerjakan** | Dokumen, validasi, singleton, preview list |
-| **Tahap 2** | Database Supabase & Server Client | NFR-03, FR-601 - FR-603 | Belum Mulai | SQL Migrations, RLS, server client, Zod schema |
+| **Tahap 1** | Skema Sanity dan Studio | FR-201, FR-202, FR-203 | **Selesai** | Seluruh skema (9 dokumen, 6 objek), validasi ketat, desk structure, TypeGen TypeScript, seed 3 author, 5 category, 5 post, 1 siteSettings di staging (2026-10-20) |
+| **Tahap 2** | Database Supabase & Server Client | NFR-03, FR-601 - FR-603 | **Siap Dikerjakan** | SQL Migrations, RLS, server client, Zod schema |
 | **Tahap 3** | Design System & Komponen UI | A10, NFR-05, NFR-07 | Belum Mulai | Token warna/tipografi, Tailwind, shadcn/ui, Storybook |
 | **Tahap 4** | Halaman Publik Utama | FR-101 - FR-107 | Belum Mulai | Beranda, Berita, Kategori, Tag, Penulis, Halaman Statis, RSS, Cari |
 | **Tahap 5** | SEO Teknis & Webhook Revalidasi | FR-401 - FR-404 | Belum Mulai | MetadataBase, dynamic sitemap, robots, JSON-LD, on-demand ISR |
@@ -26,3 +26,4 @@ Domain: `pemudaicmi-kotabekasi.org`
 
 ## Log Riwayat Singkat
 - **2026-10-20**: Repositori diinisialisasi. Berkas `CLAUDE.md`, `docs/PRD.md`, `docs/PROGRESS.md`, dan `docs/DECISIONS.md` dibuat. Tahap 0 (Fondasi repositori monorepo pnpm) diselesaikan dengan verifikasi lint, typecheck, unit test, dan build sukses pada kedua aplikasi `apps/web` dan `apps/studio`.
+- **2026-10-20**: Tahap 1 (Skema Sanity dan Studio) selesai: 9 tipe dokumen (`post`, `page`, `author`, `category`, `tag`, `event`, `publication`, `redirect`, `siteSettings`), 6 tipe objek (`seo`, `legacy`, `blockContent`, `youtube`, `callout`, `adSlot`), desk structure singleton & post ordering, Sanity TypeGen terintegrasi ke `apps/web/types/sanity.types.ts`, serta seed 14 dokumen (3 author, 5 kategori, 5 post artikel, 1 siteSettings) sukses diterbitkan di dataset `staging`.
