@@ -17,6 +17,7 @@
     "format:check": "prettier --check \"**/*.{ts,tsx,md,json}\""
   },
   "devDependencies": {
+    "@supabase/supabase-js": "^2.49.1",
     "prettier": "^3.5.3",
     "typescript": "^5.8.2",
     "vitest": "^3.0.8"
