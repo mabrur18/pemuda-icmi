@@ -12,8 +12,9 @@ import { AuthorCard } from "@/components/cards/AuthorCard";
 import { PortableTextRenderer } from "@/components/sanity/PortableTextRenderer";
 import { TableOfContents } from "@/components/article/TableOfContents";
 import { ShareButtons } from "@/components/article/ShareButtons";
+import { AdSlot } from "@/components/ads/AdSlot";
 import { sanityFetch } from "@/lib/sanity/fetch";
-import { POST_PAGE_QUERY, POST_SLUGS_QUERY } from "@/lib/sanity/queries";
+import { POST_PAGE_QUERY, POST_SLUGS_QUERY, SITE_SETTINGS_QUERY } from "@/lib/sanity/queries";
 import { urlForImage } from "@/lib/sanity/image";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { buildArticleJsonLd, buildBreadcrumbJsonLd } from "@/lib/seo/jsonld";
@@ -113,11 +114,18 @@ export default async function PostDetailPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const post = await sanityFetch<any>({
-    query: POST_PAGE_QUERY,
-    params: { slug },
-    tags: [`post:${slug}`],
-  });
+
+  const [post, siteSettings] = await Promise.all([
+    sanityFetch<any>({
+      query: POST_PAGE_QUERY,
+      params: { slug },
+      tags: [`post:${slug}`],
+    }),
+    sanityFetch<any>({
+      query: SITE_SETTINGS_QUERY,
+      tags: ["siteSettings"],
+    }).catch(() => null),
+  ]);
 
   if (!post) {
     notFound();
@@ -305,9 +313,15 @@ export default async function PostDetailPage({
                 <TableOfContents body={post.body} />
               </div>
 
-              {/* Portable Text Content */}
+              {/* Portable Text Content with In-Article Ad Slot (FR-503 & FR-504) */}
               <div className="article-body font-serif text-ink">
-                <PortableTextRenderer value={post.body} />
+                <PortableTextRenderer
+                  value={post.body}
+                  adsEnabled={post.adsEnabled ?? true}
+                  injectAfterParagraph={siteSettings?.adsense?.injectAfterParagraph ?? 3}
+                  inArticleSlotId={siteSettings?.adsense?.slots?.inArticle}
+                  publisherId={siteSettings?.adsense?.publisherId}
+                />
               </div>
 
               {/* Tags Section */}
@@ -331,6 +345,14 @@ export default async function PostDetailPage({
                 <ShareButtons title={post.title} url={currentUrl} />
               </div>
 
+              {/* AdSlot Bawah Artikel (FR-503 & FR-504) */}
+              <AdSlot
+                position="belowArticle"
+                slotId={siteSettings?.adsense?.slots?.belowArticle}
+                publisherId={siteSettings?.adsense?.publisherId}
+                adsEnabled={post.adsEnabled ?? true}
+              />
+
               {/* Author Bio Card */}
               {post.author && (
                 <div className="my-10">
@@ -348,17 +370,17 @@ export default async function PostDetailPage({
               )}
             </article>
 
-            {/* Right Sidebar: Populer & Buletin (Desktop 3 Kolom) */}
+            {/* Right Sidebar: Populer, Iklan & Buletin (Desktop 3 Kolom - FR-503) */}
             <aside className="lg:col-span-3 sticky top-24 hidden lg:flex flex-col gap-6">
-              {/* AdSlot Placeholder */}
-              <div className="p-4 rounded-card border-2 border-dashed border-border bg-muted/10 h-[250px] flex flex-col items-center justify-center text-center">
-                <span className="text-xs uppercase font-bold text-muted">
-                  Iklan Bilah Samping (300x250)
-                </span>
-                <span className="text-[11px] text-muted mt-1">
-                  AdSense Sidebar Unit
-                </span>
-              </div>
+              {/* AdSlot Bilah Samping Desktop (FR-503 & FR-504) */}
+              <AdSlot
+                position="sidebar"
+                slotId={siteSettings?.adsense?.slots?.sidebar}
+                publisherId={siteSettings?.adsense?.publisherId}
+                adsEnabled={post.adsEnabled ?? true}
+              />
+
+              {/* Buletin Mini */}
 
               {/* Buletin Mini */}
               <div className="p-5 bg-brand-soft border border-brand/20 rounded-card">

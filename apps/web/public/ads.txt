@@ -1,0 +1,5 @@
+# Google AdSense Authorized Digital Sellers (ads.txt)
+# Domain: pemudaicmi-kotabekasi.org
+# Status: PRD FR-502 Compliant
+# TODO: Ganti pub-XXXXXXXXXXXXXXXX dengan ID Penayang AdSense resmi Anda dari dasbor Google AdSense
+google.com, pub-XXXXXXXXXXXXXXXX, DIRECT, f08c47fec0942fa0

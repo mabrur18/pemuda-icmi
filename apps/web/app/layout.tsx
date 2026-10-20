@@ -67,12 +67,27 @@ export const metadata: Metadata = {
 };
 
 import { themePreRenderScript } from "@/components/ui/ThemeToggle";
+import { AdsenseScript } from "@/components/ads/AdsenseScript";
+import { sanityFetch } from "@/lib/sanity/fetch";
+import { SITE_SETTINGS_QUERY } from "@/lib/sanity/queries";
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  let siteSettings: any = null;
+  try {
+    siteSettings = await sanityFetch({
+      query: SITE_SETTINGS_QUERY,
+      tags: ["siteSettings"],
+    });
+  } catch (err) {
+    console.error("Failed to fetch site settings in RootLayout:", err);
+  }
+
+  const adsense = siteSettings?.adsense;
+
   return (
     <html
       lang="id"
@@ -85,8 +100,13 @@ export default function RootLayout({
             __html: themePreRenderScript,
           }}
         />
+        <AdsenseScript
+          publisherId={adsense?.publisherId || "pub-XXXXXXXXXXXXXXXX"}
+          enabled={adsense?.enabled ?? false}
+        />
       </head>
       <body className="font-sans antialiased bg-bg text-ink">{children}</body>
     </html>
   );
 }
+
