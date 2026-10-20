@@ -9,11 +9,14 @@ import { Chip } from "@/components/ui/Chip";
 import { Button } from "@/components/ui/Button";
 import { sanityFetch } from "@/lib/sanity/fetch";
 import { HOME_PAGE_QUERY } from "@/lib/sanity/queries";
+import { JsonLd } from "@/components/seo/JsonLd";
+import { buildWebSiteJsonLd, buildOrganizationJsonLd } from "@/lib/seo/jsonld";
 import { ArrowRight, Sparkles, Mail, Calendar, Compass } from "lucide-react";
 
 export const revalidate = 3600; // ISR 1 hour
 
 export default async function HomePage() {
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://pemudaicmi-kotabekasi.org";
   let homeData: any = null;
 
   try {
@@ -31,8 +34,13 @@ export default async function HomePage() {
   const categories = homeData?.categories || [];
   const events = homeData?.events || [];
 
+  const websiteJsonLd = buildWebSiteJsonLd(siteUrl);
+  const orgJsonLd = buildOrganizationJsonLd(siteUrl);
+
   return (
     <div className="min-h-screen flex flex-col bg-bg text-ink">
+      <JsonLd data={websiteJsonLd} />
+      <JsonLd data={orgJsonLd} />
       <Header />
 
       <main className="flex-1 pb-16">

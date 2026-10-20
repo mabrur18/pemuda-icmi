@@ -15,6 +15,8 @@ import { ShareButtons } from "@/components/article/ShareButtons";
 import { sanityFetch } from "@/lib/sanity/fetch";
 import { POST_PAGE_QUERY, POST_SLUGS_QUERY } from "@/lib/sanity/queries";
 import { urlForImage } from "@/lib/sanity/image";
+import { JsonLd } from "@/components/seo/JsonLd";
+import { buildArticleJsonLd, buildBreadcrumbJsonLd } from "@/lib/seo/jsonld";
 import { ChevronRight, Clock, Calendar, Sparkles } from "lucide-react";
 
 export const revalidate = 3600; // ISR 1 hour
@@ -55,10 +57,20 @@ export async function generateMetadata({
     };
   }
 
-  const title = post.seo?.title || post.title;
-  const description = post.seo?.description || post.excerpt;
+  const title = post.seo?.metaTitle || post.title;
+  const description = post.seo?.metaDescription || post.excerpt || post.title;
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://pemudaicmi-kotabekasi.org";
   const canonicalUrl = post.seo?.canonicalUrl || `${siteUrl}/berita/${slug}`;
+  const categoryTitle = post.categories?.[0]?.title || "Berita";
+
+  let ogImageUrl: string;
+  if (post.coverImage?.asset) {
+    ogImageUrl =
+      urlForImage(post.coverImage)?.width(1200).height(630).fit("crop").url() ||
+      `${siteUrl}/api/og?title=${encodeURIComponent(title)}&category=${encodeURIComponent(categoryTitle)}`;
+  } else {
+    ogImageUrl = `${siteUrl}/api/og?title=${encodeURIComponent(title)}&category=${encodeURIComponent(categoryTitle)}`;
+  }
 
   return {
     title,
@@ -71,15 +83,25 @@ export async function generateMetadata({
       description,
       type: "article",
       publishedTime: post.publishedAt,
-      modifiedTime: post.updatedAt,
+      modifiedTime: post.updatedAt || post.publishedAt,
       authors: post.author?.name ? [post.author.name] : undefined,
+      section: categoryTitle,
       tags: post.tags?.map((t: any) => t.title),
       url: canonicalUrl,
+      images: [
+        {
+          url: ogImageUrl,
+          width: 1200,
+          height: 630,
+          alt: post.coverImage?.alt || title,
+        },
+      ],
     },
     twitter: {
       card: "summary_large_image",
       title,
       description,
+      images: [ogImageUrl],
     },
   };
 }
@@ -101,7 +123,7 @@ export default async function PostDetailPage({
     notFound();
   }
 
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://pemudaicmi-kotabekasi.org";
   const currentUrl = `${siteUrl}/berita/${slug}`;
 
   const formattedDate = post.publishedAt
@@ -119,8 +141,38 @@ export default async function PostDetailPage({
 
   const primaryCategory = post.categories?.[0];
 
+  // Schema.org Structured Data
+  const articleJsonLd = buildArticleJsonLd({
+    siteUrl,
+    title: post.title,
+    slug,
+    excerpt: post.excerpt,
+    coverImageUrl,
+    publishedAt: post.publishedAt,
+    updatedAt: post.updatedAt,
+    authorName: post.author?.name,
+    authorSlug: post.author?.slug,
+    categoryTitle: primaryCategory?.title,
+    tags: post.tags?.map((t: any) => t.title),
+  });
+
+  const breadcrumbItems = [
+    { name: "Beranda", url: `${siteUrl}/` },
+    { name: "Berita", url: `${siteUrl}/berita` },
+  ];
+  if (primaryCategory) {
+    breadcrumbItems.push({
+      name: primaryCategory.title,
+      url: `${siteUrl}/kategori/${primaryCategory.slug}`,
+    });
+  }
+  breadcrumbItems.push({ name: post.title, url: currentUrl });
+  const breadcrumbJsonLd = buildBreadcrumbJsonLd(breadcrumbItems);
+
   return (
     <div className="min-h-screen flex flex-col bg-bg text-ink">
+      <JsonLd data={articleJsonLd} />
+      <JsonLd data={breadcrumbJsonLd} />
       <Header />
 
       <main className="flex-1 pb-16">

@@ -269,3 +269,32 @@ export const RSS_POSTS_QUERY = groq`
   }
 `;
 
+// 12. Sitemap Data Query - FR-402
+export const SITEMAP_DATA_QUERY = groq`
+  {
+    "posts": *[_type == "post" && defined(slug.current)] {
+      "slug": slug.current,
+      _updatedAt,
+      publishedAt
+    },
+    "pages": *[_type == "page" && defined(slug.current)] {
+      "slug": slug.current,
+      _updatedAt
+    },
+    "categories": *[_type == "category" && defined(slug.current)] {
+      "slug": slug.current,
+      _updatedAt
+    },
+    "tags": *[_type == "tag" && defined(slug.current)] {
+      "slug": slug.current,
+      _updatedAt,
+      "postCount": count(*[_type == "post" && ^.slug.current in tags[]->slug.current])
+    },
+    "authors": *[_type == "author" && defined(slug.current)] {
+      "slug": slug.current,
+      _updatedAt
+    }
+  }
+`;
+
+
