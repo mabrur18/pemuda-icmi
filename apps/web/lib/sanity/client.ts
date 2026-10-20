@@ -11,5 +11,5 @@ export const client = createClient({
   projectId,
   dataset,
   apiVersion,
-  useCdn: false, // Ensure fresh content or handle via Next.js ISR fetch caching
+  useCdn: false, // Ensure fresh content via Next.js ISR fetch caching
 });

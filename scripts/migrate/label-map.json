@@ -1,0 +1,22 @@
+{
+  "categories": {
+    "Aktivitas": "category-kegiatan",
+    "Kegiatan": "category-kegiatan",
+    "Artikel": "category-berita-utama",
+    "Opini": "category-opini-cendekia",
+    "Essay": "category-opini-cendekia",
+    "Pendidikan": "category-kaderisasi",
+    "default": "category-berita-utama"
+  },
+  "tags": {
+    "Aktivitas": "tag-kota-bekasi",
+    "Kegiatan": "tag-kota-bekasi",
+    "Opini": "tag-cendekia-muda",
+    "Essay": "tag-cendekia-muda",
+    "Neurosains": "tag-cendekia-muda",
+    "Epistemologi": "tag-cendekia-muda",
+    "Pendidikan": "tag-cendekia-muda",
+    "Literasi": "tag-literasi-digital",
+    "default": "tag-cendekia-muda"
+  }
+}

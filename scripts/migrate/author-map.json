@@ -1,0 +1,17 @@
+{
+  "sangkunam": {
+    "_type": "reference",
+    "_ref": "author-fauzi",
+    "name": "Dr. Ahmad Fauzi, M.Pd"
+  },
+  "Pemuda ICMI": {
+    "_type": "reference",
+    "_ref": "author-rizky",
+    "name": "M. Rizky Pratama, M.Kom"
+  },
+  "default": {
+    "_type": "reference",
+    "_ref": "author-fauzi",
+    "name": "Dr. Ahmad Fauzi, M.Pd"
+  }
+}

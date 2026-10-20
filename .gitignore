@@ -2,6 +2,7 @@
 node_modules/
 .pnpm-store/
 
+
 # Next.js
 .next/
 out/
@@ -20,6 +21,9 @@ build/
 
 # Blogger Migration raw data
 scripts/migrate/input/
+scripts/migrate/out/
+scripts/migrate/asset-cache.json
+blog/
 
 # Logs & Debug
 npm-debug.log*
