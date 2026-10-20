@@ -11,6 +11,7 @@ import { sanityFetch } from "@/lib/sanity/fetch";
 import { HOME_PAGE_QUERY } from "@/lib/sanity/queries";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { buildWebSiteJsonLd, buildOrganizationJsonLd } from "@/lib/seo/jsonld";
+import { NewsletterForm } from "@/components/forms/NewsletterForm";
 import { ArrowRight, Sparkles, Mail, Calendar, Compass } from "lucide-react";
 
 export const revalidate = 3600; // ISR 1 hour
@@ -237,21 +238,7 @@ export default async function HomePage() {
                   Bergabunglah dengan ratusan pemuda cendekia Kota Bekasi. Dapatkan intisari kegiatan, rilis riset, dan opini terkurasi setiap pekan.
                 </p>
 
-                <form className="flex flex-col sm:flex-row gap-3">
-                  <input
-                    type="email"
-                    placeholder="Masukkan alamat email Anda"
-                    required
-                    className="flex-1 min-h-[44px] px-4 py-2.5 rounded-control bg-white/10 border border-white/20 text-white placeholder:text-white/60 focus:outline-none focus:ring-2 focus:ring-accent text-sm"
-                  />
-                  <Button variant="accent" size="md" className="shrink-0 whitespace-nowrap">
-                    Langganan Gratis
-                  </Button>
-                </form>
-
-                <p className="text-[11px] text-white/60 mt-3">
-                  Dengan berlangganan, Anda menyetujui Kebijakan Privasi kami. Anda dapat berhenti berlangganan kapan saja.
-                </p>
+                <NewsletterForm source="homepage_banner" variant="banner" />
               </div>
 
               {/* Decorative Geometric Motifs (A10) */}
