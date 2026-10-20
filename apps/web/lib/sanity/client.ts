@@ -1,4 +1,4 @@
-import { createClient } from "next-sanity";
+import { createClient } from "@sanity/client";
 
 export const projectId =
   process.env.NEXT_PUBLIC_SANITY_PROJECT_ID || "glupcaxn";

@@ -1,5 +1,5 @@
 import { client } from "./client";
-import type { QueryParams } from "next-sanity";
+import type { QueryParams } from "@sanity/client";
 
 /**
  * Type-safe Sanity fetch with Next.js ISR and tag-based on-demand revalidation.
