@@ -88,7 +88,7 @@ export function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/tentang" className="hover:text-brand transition-colors">
+                <Link href="/tentang-kami" className="hover:text-brand transition-colors">
                   Tentang Organisasi
                 </Link>
               </li>

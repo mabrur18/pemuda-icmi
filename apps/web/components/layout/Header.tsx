@@ -14,7 +14,7 @@ const navItems = [
   { label: "Berita", href: "/berita" },
   { label: "Kegiatan", href: "/kegiatan" },
   { label: "Publikasi", href: "/publikasi" },
-  { label: "Tentang", href: "/tentang" },
+  { label: "Tentang", href: "/tentang-kami" },
 ];
 
 export function Header() {

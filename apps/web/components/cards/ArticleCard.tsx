@@ -4,16 +4,14 @@ import Image from "next/image";
 import { Chip } from "../ui/Chip";
 import { Clock, User } from "lucide-react";
 import { clsx } from "clsx";
+import { urlForImage } from "@/lib/sanity/image";
 
 export interface ArticleCardProps {
   variant?: "large" | "standard" | "horizontal" | "compact";
   title: string;
   slug: string;
   excerpt?: string;
-  coverImage?: {
-    url: string;
-    alt: string;
-  };
+  coverImage?: any;
   category?: {
     title: string;
     slug: string;
@@ -22,6 +20,7 @@ export interface ArticleCardProps {
     name: string;
     role?: string;
     photoUrl?: string;
+    photo?: any;
   };
   publishedAt?: string;
   readingTime?: string;
@@ -51,7 +50,15 @@ export function ArticleCard({
   const placeholderImage =
     "https://images.unsplash.com/photo-1577962917302-cd874c4e31d2?auto=format&fit=crop&w=800&q=80";
 
-  const imageUrl = coverImage?.url || placeholderImage;
+  let imageUrl = placeholderImage;
+  if (typeof coverImage === "string") {
+    imageUrl = coverImage;
+  } else if (coverImage?.url) {
+    imageUrl = coverImage.url;
+  } else if (coverImage?.asset) {
+    imageUrl = urlForImage(coverImage)?.width(800).height(500).url() || placeholderImage;
+  }
+
   const imageAlt = coverImage?.alt || title;
 
   // 1. Varian Compact (Sidebar / Footer)
