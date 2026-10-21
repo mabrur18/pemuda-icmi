@@ -24,6 +24,7 @@ scripts/migrate/input/
 scripts/migrate/out/
 scripts/migrate/asset-cache.json
 blog/
+backups/
 
 # Logs & Debug
 npm-debug.log*
@@ -35,6 +36,7 @@ pnpm-debug.log*
 # Testing & Coverage
 coverage/
 *.tsbuildinfo
+.lighthouseci/
 
 # OS files
 .DS_Store

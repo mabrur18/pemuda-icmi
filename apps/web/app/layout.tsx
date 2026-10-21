@@ -68,8 +68,11 @@ export const metadata: Metadata = {
 
 import { themePreRenderScript } from "@/components/ui/ThemeToggle";
 import { AdsenseScript } from "@/components/ads/AdsenseScript";
+import { GoogleAnalytics } from "@/components/analytics/GoogleAnalytics";
+import { SpeedInsights } from "@/components/analytics/SpeedInsights";
 import { sanityFetch } from "@/lib/sanity/fetch";
 import { SITE_SETTINGS_QUERY } from "@/lib/sanity/queries";
+import "@/lib/env";
 
 export default async function RootLayout({
   children,
@@ -87,6 +90,7 @@ export default async function RootLayout({
   }
 
   const adsense = siteSettings?.adsense;
+  const gaId = siteSettings?.analytics?.gaMeasurementId || process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
 
   return (
     <html
@@ -105,7 +109,11 @@ export default async function RootLayout({
           enabled={adsense?.enabled ?? false}
         />
       </head>
-      <body className="font-sans antialiased bg-bg text-ink">{children}</body>
+      <body className="font-sans antialiased bg-bg text-ink">
+        {children}
+        <GoogleAnalytics measurementId={gaId} />
+        <SpeedInsights />
+      </body>
     </html>
   );
 }

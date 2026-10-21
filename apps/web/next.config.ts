@@ -112,6 +112,58 @@ const nextConfig: NextConfig = {
       },
     ];
   },
+
+  // 6. Header Keamanan Ketat (PRD A4 & NFR-03)
+  async headers() {
+    // Content Security Policy dalam mode report-only
+    // AdSense & analytics memuat banyak domain; pelanggaran dicatat ke /api/csp-report tanpa memblokir lelang iklan
+    const cspReportOnly = [
+      "default-src 'self'",
+      "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://pagead2.googlesyndication.com https://www.googletagmanager.com https://www.google-analytics.com https://adservice.google.com https://tpc.googlesyndication.com https://cdn.sanity.io https://va.vercel-scripts.com",
+      "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+      "img-src 'self' data: blob: https://cdn.sanity.io https://images.unsplash.com https://pagead2.googlesyndication.com https://www.google-analytics.com https://*.google.com https://*.doubleclick.net https://*.googlesyndication.com",
+      "font-src 'self' data: https://fonts.gstatic.com",
+      "frame-src 'self' https://www.youtube.com https://googleads.g.doubleclick.net https://tpc.googlesyndication.com",
+      "connect-src 'self' https://glupcaxn.api.sanity.io https://glupcaxn.apicdn.sanity.io https://*.supabase.co https://www.google-analytics.com https://pagead2.googlesyndication.com https://*.doubleclick.net https://*.googlesyndication.com https://va.vercel-scripts.com",
+      "report-uri /api/csp-report",
+    ].join("; ");
+
+    return [
+      {
+        source: "/:path*",
+        headers: [
+          {
+            key: "X-DNS-Prefetch-Control",
+            value: "on",
+          },
+          {
+            key: "Strict-Transport-Security",
+            value: "max-age=63072000; includeSubDomains; preload",
+          },
+          {
+            key: "X-Content-Type-Options",
+            value: "nosniff",
+          },
+          {
+            key: "X-Frame-Options",
+            value: "DENY",
+          },
+          {
+            key: "Referrer-Policy",
+            value: "strict-origin-when-cross-origin",
+          },
+          {
+            key: "Permissions-Policy",
+            value: "camera=(), microphone=(), geolocation=(), browsing-topics=()",
+          },
+          {
+            key: "Content-Security-Policy-Report-Only",
+            value: cspReportOnly,
+          },
+        ],
+      },
+    ];
+  },
 };
 
 export default nextConfig;
