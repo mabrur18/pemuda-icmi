@@ -1,46 +1,120 @@
-# Dependencies
+# ==============================================================================
+# Pemuda ICMI Kota Bekasi - Root .gitignore
+# ==============================================================================
+
+# ------------------------------------------------------------------------------
+# 1. Environment & Secrets (CRITICAL: Never commit secrets or tokens)
+# ------------------------------------------------------------------------------
+.env
+.env.*
+*.env
+*.env.*
+!.env.example
+!.env.*.example
+
+# Private Keys & Certificates
+*.pem
+*.key
+*.cert
+*.crt
+*.pfx
+*.p12
+
+# ------------------------------------------------------------------------------
+# 2. Package Managers & Dependencies
+# ------------------------------------------------------------------------------
 node_modules/
 .pnpm-store/
+.yarn/
+.yarn-cache/
 
+# Debug Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+*.log
 
-# Next.js
+# ------------------------------------------------------------------------------
+# 3. Next.js, Frameworks & Build Outputs
+# ------------------------------------------------------------------------------
 .next/
 out/
-
-# Build artifacts
 dist/
 build/
+.turbo/
+.swc/
+.cache/
+*.tsbuildinfo
 
-# Environment files (never commit secrets)
-.env
-.env*.local
-!.env.example
-
-# Sanity Studio
+# ------------------------------------------------------------------------------
+# 4. Sanity Studio & CMS Runtime
+# ------------------------------------------------------------------------------
 .sanity/
+.sanity-runtime/
 
-# Blogger Migration raw data
+# ------------------------------------------------------------------------------
+# 5. Blogger Migration, Data Dumps & Backups
+# ------------------------------------------------------------------------------
 scripts/migrate/input/
 scripts/migrate/out/
 scripts/migrate/asset-cache.json
 blog/
 backups/
 
-# Logs & Debug
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-*.log
+# Archive & Backup Files
+*.tar.gz
+*.tar
+*.zip
+*.tgz
+*.gz
+*.bak
+*.backup
+*.dump
 
-# Testing & Coverage
+# ------------------------------------------------------------------------------
+# 6. Testing, Quality Assurance & Coverage
+# ------------------------------------------------------------------------------
 coverage/
-*.tsbuildinfo
+.nyc_output/
 .lighthouseci/
+test-results/
+playwright-report/
+blob-report/
 
-# OS files
-.DS_Store
+# ------------------------------------------------------------------------------
+# 7. IDE, Editors & Development Tools
+# ------------------------------------------------------------------------------
+.idea/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+!.vscode/launch.json
+*.sublime-project
+*.sublime-workspace
+*.swp
+*.swo
+*~
+
+# ------------------------------------------------------------------------------
+# 8. Operating System Artifacts (Windows, macOS, Linux)
+# ------------------------------------------------------------------------------
+# Windows
 Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+[Dd]esktop.ini
+$RECYCLE.BIN/
 
-# Turbopack / Cache
-.turbo/
+# macOS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+
+# Temporary files
+*.tmp
+*.temp
