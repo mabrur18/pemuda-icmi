@@ -9,7 +9,7 @@ export default defineCliConfig({
     dataset:
       process.env.SANITY_STUDIO_DATASET ||
       process.env.NEXT_PUBLIC_SANITY_DATASET ||
-      "staging",
+      "production",
   },
   deployment: {
     autoUpdates: false,
