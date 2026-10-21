@@ -15,7 +15,7 @@ export default defineConfig({
   dataset:
     process.env.SANITY_STUDIO_DATASET ||
     process.env.NEXT_PUBLIC_SANITY_DATASET ||
-    "staging",
+    "production",
 
   plugins: [structureTool({ structure }), visionTool()],
 
