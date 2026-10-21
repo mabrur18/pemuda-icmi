@@ -14,7 +14,9 @@
     "test": "vitest run",
     "typegen": "pnpm --filter studio typegen",
     "format": "prettier --write \"**/*.{ts,tsx,md,json}\"",
-    "format:check": "prettier --check \"**/*.{ts,tsx,md,json}\""
+    "format:check": "prettier --check \"**/*.{ts,tsx,md,json}\"",
+    "qa:redirects": "tsx scripts/qa/check-redirects.ts",
+    "qa:links": "tsx scripts/qa/check-links.ts"
   },
   "devDependencies": {
     "@sanity/block-tools": "^3.70.0",
