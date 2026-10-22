@@ -1,22 +1,36 @@
 import React from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { Container } from "../ui/Container";
+import { getSiteLogo } from "@/lib/sanity/site-logo";
 import { Instagram, Youtube, Facebook, Twitter, Mail, MapPin, Phone } from "lucide-react";
 
-export function Footer() {
+export async function Footer() {
+  const logo = await getSiteLogo();
   return (
     <footer className="w-full bg-surface border-t border-border mt-auto pt-12 pb-8">
       <Container>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12 pb-12 border-b border-border">
           {/* Kolom 1: Profil Organisasi */}
           <div className="flex flex-col gap-4">
-            <div className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-full bg-brand flex items-center justify-center text-white font-bold text-base shadow-sm">
-                <span className="text-accent font-extrabold">I</span>
-                <span>C</span>
+            {logo ? (
+              <Image
+                src={logo.url}
+                alt={logo.alt}
+                width={160}
+                height={36}
+                unoptimized
+                className="h-9 w-auto max-w-[200px] object-contain self-start"
+              />
+            ) : (
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 rounded-full bg-brand flex items-center justify-center text-white font-bold text-base shadow-sm">
+                  <span className="text-accent font-extrabold">I</span>
+                  <span>C</span>
+                </div>
+                <span className="font-bold text-lg text-ink">Pemuda ICMI</span>
               </div>
-              <span className="font-bold text-lg text-ink">Pemuda ICMI</span>
-            </div>
+            )}
             <p className="text-sm text-muted leading-relaxed">
               Organisasi Daerah Pemuda Ikatan Cendekiawan Muslim se-Indonesia (Pemuda ICMI) Kota Bekasi.
               Mewadahi cendekia muda dalam kepemimpinan, riset, dan pengabdian umat.

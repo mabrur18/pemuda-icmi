@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { revalidateTag } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import crypto from "crypto";
 
 export const runtime = "nodejs";
@@ -139,6 +139,12 @@ export async function POST(request: NextRequest) {
       revalidatedTags.push("posts", "pages");
       break;
   }
+
+  // Unpublish/delete events usually arrive without _type or slug, so the tag
+  // mapping above cannot find the affected pages (e.g. post:<slug>). Purge the
+  // whole route cache as well; the site is small, so a full refresh is cheap.
+  revalidatePath("/", "layout");
+  revalidatedTags.push("path:/ (layout)");
 
   return NextResponse.json({
     revalidated: true,
