@@ -20,7 +20,7 @@ export function validateEnv(): EnvConfig {
   const sanityDataset =
     process.env.NEXT_PUBLIC_SANITY_DATASET !== undefined
       ? process.env.NEXT_PUBLIC_SANITY_DATASET.trim()
-      : "staging";
+      : "production";
   const sanityApiVersion = process.env.NEXT_PUBLIC_SANITY_API_VERSION || "2024-01-01";
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://pemudaicmi-kotabekasi.org";
 

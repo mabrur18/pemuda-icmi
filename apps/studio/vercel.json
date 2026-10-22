@@ -1,3 +1,8 @@
-   { "headers": [{ "source": "/(.*)", "headers": [
-     { "key": "Access-Control-Allow-Origin", "value": "https://<ORG_ID>.sanity.run" }
-   ] }] }
+{
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}

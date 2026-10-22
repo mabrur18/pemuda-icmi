@@ -72,6 +72,7 @@ import { GoogleAnalytics } from "@/components/analytics/GoogleAnalytics";
 import { SpeedInsights } from "@/components/analytics/SpeedInsights";
 import { sanityFetch } from "@/lib/sanity/fetch";
 import { SITE_SETTINGS_QUERY } from "@/lib/sanity/queries";
+import { draftMode } from "next/headers";
 import "@/lib/env";
 
 export default async function RootLayout({
@@ -79,6 +80,14 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  let isDraft = false;
+  try {
+    const draft = await draftMode();
+    isDraft = draft.isEnabled;
+  } catch {
+    isDraft = false;
+  }
+
   let siteSettings: any = null;
   try {
     siteSettings = await sanityFetch({
@@ -110,6 +119,17 @@ export default async function RootLayout({
         />
       </head>
       <body className="font-sans antialiased bg-bg text-ink">
+        {isDraft && (
+          <aside className="sticky top-0 z-50 flex items-center justify-between px-4 py-2 text-xs font-semibold text-white bg-amber-600 shadow-md">
+            <span>Mode Pratinjau Draf Aktif (Menampilkan konten belum terbit & perubahan langsung dari Sanity)</span>
+            <a
+              href="/api/draft-mode/disable"
+              className="px-2.5 py-1 text-amber-900 bg-white rounded font-medium hover:bg-amber-50 transition-colors"
+            >
+              Keluar Pratinjau
+            </a>
+          </aside>
+        )}
         {children}
         <GoogleAnalytics measurementId={gaId} />
         <SpeedInsights />
