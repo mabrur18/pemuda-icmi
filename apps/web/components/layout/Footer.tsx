@@ -3,10 +3,43 @@ import Link from "next/link";
 import Image from "next/image";
 import { Container } from "../ui/Container";
 import { getSiteLogo } from "@/lib/sanity/site-logo";
+import { getSiteContact } from "@/lib/sanity/site-settings";
+import { sanityFetch } from "@/lib/sanity/fetch";
+import { FOOTER_CATEGORIES_QUERY, PAGE_SLUGS_QUERY } from "@/lib/sanity/queries";
 import { Instagram, Youtube, Facebook, Twitter, Mail, MapPin, Phone } from "lucide-react";
 
+const FALLBACK_CATEGORIES = [
+  { title: "Berita Utama", slug: "berita-utama" },
+  { title: "Kaderisasi & Pelatihan", slug: "kaderisasi" },
+  { title: "Opini Cendekia", slug: "opini-cendekia" },
+  { title: "Kegiatan Organisasi", slug: "kegiatan" },
+  { title: "Kolaborasi & Sinergi", slug: "kemitraan" },
+];
+
 export async function Footer() {
-  const logo = await getSiteLogo();
+  const [logo, contact, categoriesRaw, pageSlugsRaw] = await Promise.all([
+    getSiteLogo(),
+    getSiteContact(),
+    sanityFetch<{ title: string; slug: string }[]>({
+      query: FOOTER_CATEGORIES_QUERY,
+      tags: ["categories"],
+    }).catch(() => []),
+    sanityFetch<string[]>({ query: PAGE_SLUGS_QUERY, tags: ["pages"] }).catch(() => []),
+  ]);
+  const categories = categoriesRaw?.length ? categoriesRaw : FALLBACK_CATEGORIES;
+  const pageSlugs = new Set(pageSlugsRaw || []);
+  const socials = [
+    { href: contact.social.instagram, label: "Instagram", Icon: Instagram },
+    { href: contact.social.youtube, label: "YouTube", Icon: Youtube },
+    { href: contact.social.facebook, label: "Facebook", Icon: Facebook },
+    { href: contact.social.twitter, label: "X (Twitter)", Icon: Twitter },
+  ].filter((s) => !!s.href);
+  const legalLinks = [
+    { href: "/kebijakan-privasi", label: "Kebijakan Privasi", slug: "kebijakan-privasi" },
+    { href: "/redaksi", label: "Susunan Redaksi", slug: "redaksi" },
+    { href: "/pedoman-media-siber", label: "Pedoman Media Siber", slug: "pedoman-media-siber" },
+  ].filter((l) => pageSlugs.has(l.slug));
+  const showAbout = pageSlugs.has("tentang-kami");
   return (
     <footer className="w-full bg-surface border-t border-border mt-auto pt-12 pb-8">
       <Container>
@@ -35,44 +68,22 @@ export async function Footer() {
               Organisasi Daerah Pemuda Ikatan Cendekiawan Muslim se-Indonesia (Pemuda ICMI) Kota Bekasi.
               Mewadahi cendekia muda dalam kepemimpinan, riset, dan pengabdian umat.
             </p>
-            <div className="flex items-center gap-3 pt-2">
-              <a
-                href="https://instagram.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-9 h-9 flex items-center justify-center rounded-control bg-bg hover:bg-brand-soft text-muted hover:text-brand transition-colors"
-                aria-label="Instagram"
-              >
-                <Instagram className="w-4 h-4" />
-              </a>
-              <a
-                href="https://youtube.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-9 h-9 flex items-center justify-center rounded-control bg-bg hover:bg-brand-soft text-muted hover:text-brand transition-colors"
-                aria-label="YouTube"
-              >
-                <Youtube className="w-4 h-4" />
-              </a>
-              <a
-                href="https://facebook.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-9 h-9 flex items-center justify-center rounded-control bg-bg hover:bg-brand-soft text-muted hover:text-brand transition-colors"
-                aria-label="Facebook"
-              >
-                <Facebook className="w-4 h-4" />
-              </a>
-              <a
-                href="https://twitter.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-9 h-9 flex items-center justify-center rounded-control bg-bg hover:bg-brand-soft text-muted hover:text-brand transition-colors"
-                aria-label="X (Twitter)"
-              >
-                <Twitter className="w-4 h-4" />
-              </a>
-            </div>
+            {socials.length > 0 && (
+              <div className="flex items-center gap-3 pt-2">
+                {socials.map(({ href, label, Icon }) => (
+                  <a
+                    key={label}
+                    href={href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-9 h-9 flex items-center justify-center rounded-control bg-bg hover:bg-brand-soft text-muted hover:text-brand transition-colors"
+                    aria-label={label}
+                  >
+                    <Icon className="w-4 h-4" />
+                  </a>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Kolom 2: Navigasi Cepat */}
@@ -101,11 +112,13 @@ export async function Footer() {
                   Publikasi & Riset
                 </Link>
               </li>
-              <li>
-                <Link href="/tentang-kami" className="hover:text-brand transition-colors">
-                  Tentang Organisasi
-                </Link>
-              </li>
+              {showAbout && (
+                <li>
+                  <Link href="/tentang-kami" className="hover:text-brand transition-colors">
+                    Tentang Organisasi
+                  </Link>
+                </li>
+              )}
               <li>
                 <Link href="/kontak" className="hover:text-brand transition-colors">
                   Hubungi Kami
@@ -120,31 +133,16 @@ export async function Footer() {
               Kategori
             </h4>
             <ul className="flex flex-col gap-2.5 text-sm text-muted">
-              <li>
-                <Link href="/kategori/berita-utama" className="hover:text-brand transition-colors">
-                  Berita Utama
-                </Link>
-              </li>
-              <li>
-                <Link href="/kategori/kaderisasi" className="hover:text-brand transition-colors">
-                  Kaderisasi & Pelatihan
-                </Link>
-              </li>
-              <li>
-                <Link href="/kategori/opini-cendekia" className="hover:text-brand transition-colors">
-                  Opini Cendekia
-                </Link>
-              </li>
-              <li>
-                <Link href="/kategori/kegiatan" className="hover:text-brand transition-colors">
-                  Kegiatan Organisasi
-                </Link>
-              </li>
-              <li>
-                <Link href="/kategori/kemitraan" className="hover:text-brand transition-colors">
-                  Kolaborasi & Sinergi
-                </Link>
-              </li>
+              {categories.map((cat) => (
+                <li key={cat.slug}>
+                  <Link
+                    href={`/kategori/${cat.slug}`}
+                    className="hover:text-brand transition-colors"
+                  >
+                    {cat.title}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
 
@@ -156,15 +154,19 @@ export async function Footer() {
             <div className="flex flex-col gap-3 text-sm text-muted">
               <div className="flex items-start gap-2.5">
                 <MapPin className="w-4 h-4 text-brand shrink-0 mt-0.5" />
-                <span>Kota Bekasi, Jawa Barat, Indonesia</span>
+                <span className="whitespace-pre-line">{contact.address}</span>
               </div>
               <div className="flex items-center gap-2.5">
                 <Mail className="w-4 h-4 text-brand shrink-0" />
-                <span>kontak@pemudaicmi-kotabekasi.org</span>
+                <a href={`mailto:${contact.email}`} className="hover:text-brand transition-colors break-all">
+                  {contact.email}
+                </a>
               </div>
               <div className="flex items-center gap-2.5">
                 <Phone className="w-4 h-4 text-brand shrink-0" />
-                <span>+62 812-3456-7890</span>
+                <a href={`tel:+${contact.phoneDigits}`} className="hover:text-brand transition-colors">
+                  {contact.phone}
+                </a>
               </div>
             </div>
           </div>
@@ -174,15 +176,11 @@ export async function Footer() {
         <div className="pt-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-muted">
           <p>© {new Date().getFullYear()} Pemuda ICMI Kota Bekasi. Hak cipta dilindungi undang-undang.</p>
           <div className="flex items-center gap-6">
-            <Link href="/kebijakan-privasi" className="hover:text-brand transition-colors">
-              Kebijakan Privasi
-            </Link>
-            <Link href="/redaksi" className="hover:text-brand transition-colors">
-              Susunan Redaksi
-            </Link>
-            <Link href="/pedoman-media-siber" className="hover:text-brand transition-colors">
-              Pedoman Media Siber
-            </Link>
+            {legalLinks.map((l) => (
+              <Link key={l.href} href={l.href} className="hover:text-brand transition-colors">
+                {l.label}
+              </Link>
+            ))}
           </div>
         </div>
       </Container>

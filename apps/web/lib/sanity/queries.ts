@@ -13,6 +13,55 @@ export const SITE_SETTINGS_QUERY = groq`
   }
 `;
 
+export const FOOTER_CATEGORIES_QUERY = groq`
+  *[_type == "category" && defined(slug.current)] | order(title asc)[0...6] {
+    title,
+    "slug": slug.current
+  }
+`;
+
+// Daftar Agenda & Kegiatan (/kegiatan)
+export const EVENTS_INDEX_QUERY = groq`
+  *[_type == "event" && defined(slug.current)] | order(startDate desc) {
+    _id,
+    title,
+    "slug": slug.current,
+    coverImage,
+    startDate,
+    endDate,
+    location,
+    registrationOpen
+  }
+`;
+
+// Detail Kegiatan (/kegiatan/[slug])
+export const EVENT_PAGE_QUERY = groq`
+  *[_type == "event" && slug.current == $slug][0] {
+    _id,
+    title,
+    "slug": slug.current,
+    coverImage,
+    startDate,
+    endDate,
+    location,
+    registrationOpen,
+    body,
+    seo
+  }
+`;
+
+// Daftar Publikasi & Dokumen (/publikasi)
+export const PUBLICATIONS_QUERY = groq`
+  *[_type == "publication"] | order(year desc, _createdAt desc) {
+    _id,
+    title,
+    year,
+    summary,
+    "fileUrl": file.asset->url
+  }
+`;
+
+
 // 2. Beranda (Home Page) Query - FR-101
 export const HOME_PAGE_QUERY = groq`
   {

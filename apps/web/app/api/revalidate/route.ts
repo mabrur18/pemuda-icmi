@@ -132,6 +132,12 @@ export async function POST(request: NextRequest) {
       revalidatedTags.push("siteSettings");
       break;
 
+    case "publication":
+      revalidateTag("publications");
+      revalidatedTags.push("publications");
+      break;
+
+
     default:
       // If type not specified or unknown, revalidate global tags
       revalidateTag("posts");
