@@ -122,6 +122,7 @@ export default async function RootLayout({
         {isDraft && (
           <aside className="sticky top-0 z-50 flex items-center justify-between px-4 py-2 text-xs font-semibold text-white bg-amber-600 shadow-md">
             <span>Mode Pratinjau Draf Aktif (Menampilkan konten belum terbit & perubahan langsung dari Sanity)</span>
+            {/* eslint-disable-next-line @next/next/no-html-link-for-pages -- API route, harus full navigation */}
             <a
               href="/api/draft-mode/disable"
               className="px-2.5 py-1 text-amber-900 bg-white rounded font-medium hover:bg-amber-50 transition-colors"
