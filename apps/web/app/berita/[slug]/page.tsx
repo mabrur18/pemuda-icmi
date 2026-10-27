@@ -247,7 +247,7 @@ export default async function PostDetailPage({
                     <div>
                       <span className="font-semibold text-ink block">{post.author.name}</span>
                       {post.author.role && (
-                        <span className="text-[11px] text-muted block">{post.author.role}</span>
+                        <span className="text-xs text-muted block">{post.author.role}</span>
                       )}
                     </div>
                   </div>

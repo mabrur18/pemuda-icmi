@@ -81,16 +81,16 @@ export function ArticleCard({
         </div>
         <div className="flex flex-col justify-center min-w-0 flex-1">
           {category && (
-            <span className="text-[11px] font-semibold text-accent uppercase tracking-wider mb-1 line-clamp-1">
+            <span className="text-xs font-semibold text-brand uppercase tracking-wider mb-1 line-clamp-1">
               {category.title}
             </span>
           )}
           <h4 className="text-sm font-semibold text-ink leading-snug line-clamp-2 group-hover:text-brand transition-colors">
-            <Link href={`/berita/${slug}`} className="focus-visible:outline-none">
+            <Link href={`/berita/${slug}`} className="focus-visible:underline focus-visible:decoration-2 focus-visible:underline-offset-4 focus-visible:text-brand">
               {title}
             </Link>
           </h4>
-          <span className="text-[11px] text-muted mt-1.5">{formattedDate}</span>
+          <span className="text-xs text-muted mt-1.5">{formattedDate}</span>
         </div>
       </article>
     );
@@ -134,7 +134,7 @@ export function ArticleCard({
             </div>
 
             <h3 className="text-lg sm:text-xl font-bold text-ink leading-tight mb-2.5 group-hover:text-brand transition-colors">
-              <Link href={`/berita/${slug}`} className="focus-visible:outline-none">
+              <Link href={`/berita/${slug}`} className="focus-visible:underline focus-visible:decoration-2 focus-visible:underline-offset-4 focus-visible:text-brand">
                 {title}
               </Link>
             </h3>
@@ -204,7 +204,7 @@ export function ArticleCard({
             </div>
 
             <h2 className="text-2xl sm:text-3xl font-extrabold text-ink leading-tight mb-3.5 group-hover:text-brand transition-colors">
-              <Link href={`/berita/${slug}`} className="focus-visible:outline-none">
+              <Link href={`/berita/${slug}`} className="focus-visible:underline focus-visible:decoration-2 focus-visible:underline-offset-4 focus-visible:text-brand">
                 {title}
               </Link>
             </h2>
@@ -223,7 +223,7 @@ export function ArticleCard({
               </div>
               <div>
                 <span className="font-medium text-ink block">{author?.name || "Redaksi Pemuda ICMI"}</span>
-                {author?.role && <span className="text-[11px] text-muted">{author.role}</span>}
+                {author?.role && <span className="text-xs text-muted">{author.role}</span>}
               </div>
             </div>
             <span>{formattedDate}</span>
@@ -261,7 +261,7 @@ export function ArticleCard({
 
       <div className="p-5 flex flex-col justify-between flex-1">
         <div>
-          <div className="flex items-center justify-between text-[11px] text-muted mb-2">
+          <div className="flex items-center justify-between text-xs text-muted mb-2">
             <span>{formattedDate}</span>
             {readingTime && (
               <span className="flex items-center gap-1">
@@ -272,7 +272,7 @@ export function ArticleCard({
           </div>
 
           <h3 className="text-base sm:text-lg font-bold text-ink leading-snug line-clamp-2 mb-2 group-hover:text-brand transition-colors">
-            <Link href={`/berita/${slug}`} className="focus-visible:outline-none">
+            <Link href={`/berita/${slug}`} className="focus-visible:underline focus-visible:decoration-2 focus-visible:underline-offset-4 focus-visible:text-brand">
               {title}
             </Link>
           </h3>

@@ -74,7 +74,7 @@ export function HeaderClient({ logo }: { logo: SiteLogo | null }) {
                 <span className="font-bold text-base sm:text-lg leading-tight text-ink group-hover:text-brand transition-colors">
                   Pemuda ICMI
                 </span>
-                <span className="text-[11px] font-medium text-muted tracking-wider uppercase">
+                <span className="text-xs font-medium text-muted tracking-wider uppercase">
                   Kota Bekasi
                 </span>
               </div>

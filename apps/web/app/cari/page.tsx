@@ -66,7 +66,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
 
           <form action="/cari" method="GET" className="relative max-w-2xl mx-auto">
             <div className="relative flex items-center">
-              <Search className="absolute left-4 w-5 h-5 text-ink/40 pointer-events-none" />
+              <Search className="absolute left-4 w-5 h-5 text-muted pointer-events-none" />
               <input
                 type="search"
                 name="q"
@@ -74,7 +74,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
                 placeholder="Ketik kata kunci (misal: pelantikan, pendidikan, ekonomi syariah)..."
                 required
                 minLength={2}
-                className="w-full h-13 pl-12 pr-28 rounded-control border border-border bg-surface text-ink text-sm md:text-base placeholder:text-ink/40 focus:outline-none focus:ring-2 focus:ring-brand focus:border-brand transition-all shadow-xs"
+                className="w-full h-13 pl-12 pr-28 rounded-control border border-border bg-surface text-ink text-sm md:text-base placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-brand focus:border-brand transition-all shadow-xs"
               />
               <button
                 type="submit"

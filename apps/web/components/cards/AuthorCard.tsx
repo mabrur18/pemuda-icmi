@@ -51,7 +51,7 @@ export function AuthorCard({
 
       <div className="flex flex-col flex-1 min-w-0">
         <h3 className="text-lg font-bold text-ink leading-tight group-hover:text-brand transition-colors">
-          <Link href={`/penulis/${slug}`} className="focus-visible:outline-none">
+          <Link href={`/penulis/${slug}`} className="focus-visible:underline focus-visible:decoration-2 focus-visible:underline-offset-4 focus-visible:text-brand">
             {name}
           </Link>
         </h3>

@@ -121,7 +121,7 @@ export default async function HomePage() {
                   <Link
                     key={cat._id}
                     href={`/kategori/${cat.slug}`}
-                    className="shrink-0 focus-visible:outline-none"
+                    className="shrink-0 focus-visible:underline focus-visible:decoration-2 focus-visible:underline-offset-4 focus-visible:text-brand"
                   >
                     <Chip variant="default" size="md" className="hover:bg-brand-soft hover:text-brand">
                       {cat.title}
