@@ -66,7 +66,7 @@ export default async function HomePage() {
                 </div>
 
                 {/* 3 Artikel Sekunder: 4 Kolom Desktop */}
-                <div className="lg:col-span-4 flex flex-col justify-between gap-4">
+                <div className="lg:col-span-4 flex flex-col gap-3 lg:justify-between lg:gap-4">
                   <div className="flex items-center justify-between pb-2 border-b border-border">
                     <span className="text-xs font-bold uppercase tracking-wider text-muted flex items-center gap-1.5">
                       <Sparkles className="w-3.5 h-3.5 text-accent" />
@@ -81,7 +81,7 @@ export default async function HomePage() {
                     </Link>
                   </div>
 
-                  <div className="flex flex-col gap-4 flex-1 justify-around">
+                  <div className="flex flex-col gap-3 lg:flex-1 lg:justify-around">
                     {secondaryHero.map((post: any) => (
                       <ArticleCard
                         key={post._id}
