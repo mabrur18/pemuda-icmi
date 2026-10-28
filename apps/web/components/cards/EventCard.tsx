@@ -59,7 +59,7 @@ export function EventCard({
       <div className="flex items-start sm:items-center gap-4 sm:gap-5 min-w-0">
         {/* Calendar Date Block */}
         <div className="w-16 h-16 shrink-0 rounded-control bg-brand-soft border border-brand/20 flex flex-col items-center justify-center text-center shadow-xs">
-          <span className="text-[11px] font-bold text-brand uppercase tracking-wider">
+          <span className="text-xs font-bold text-brand uppercase tracking-wider">
             {monthStr}
           </span>
           <span className="text-2xl font-black text-ink leading-none mt-0.5">
@@ -78,7 +78,7 @@ export function EventCard({
           </div>
 
           <h3 className="text-base sm:text-lg font-bold text-ink leading-snug line-clamp-2 group-hover:text-brand transition-colors">
-            <Link href={`/kegiatan/${slug}`} className="focus-visible:outline-none">
+            <Link href={`/kegiatan/${slug}`} className="focus-visible:underline focus-visible:decoration-2 focus-visible:underline-offset-4 focus-visible:text-brand">
               {title}
             </Link>
           </h3>

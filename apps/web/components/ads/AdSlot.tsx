@@ -82,7 +82,7 @@ export function AdSlot({
       )}
     >
       {/* Label Iklan (PRD: Label 'Iklan' wajib agar transparan bagi pembaca) */}
-      <span className="text-[10px] uppercase tracking-wider text-ink/40 font-semibold mb-1.5 self-center">
+      <span className="text-xs uppercase tracking-wider text-muted font-semibold mb-1.5 self-center">
         Iklan
       </span>
 
@@ -104,10 +104,10 @@ export function AdSlot({
           <span className="text-xs font-semibold text-ink/70">
             {positionLabels[position]}
           </span>
-          <span className="text-[11px] text-ink/40 mt-0.5">
+          <span className="text-xs text-muted mt-0.5">
             {slotId ? `Slot ID: ${slotId}` : "Penempatan Otomatis AdSense"} · {effectivePublisherId}
           </span>
-          <span className="text-[10px] text-accent/80 font-medium mt-2 px-2 py-0.5 rounded-full bg-accent/10">
+          <span className="text-xs text-accent/80 font-medium mt-2 px-2 py-0.5 rounded-full bg-accent/10">
             {isProduction ? "Slot Iklan Siap Tayang" : "Preview Mode (Bebas Pergeseran Tata Letak)"}
           </span>
         </div>

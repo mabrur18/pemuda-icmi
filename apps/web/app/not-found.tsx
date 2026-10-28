@@ -29,13 +29,13 @@ export default function NotFound() {
           {/* Quick Search */}
           <form action="/cari" method="GET" className="relative mb-8 max-w-md mx-auto">
             <div className="relative flex items-center">
-              <Search className="absolute left-3.5 w-4 h-4 text-ink/40 pointer-events-none" />
+              <Search className="absolute left-3.5 w-4 h-4 text-muted pointer-events-none" />
               <input
                 type="search"
                 name="q"
                 placeholder="Cari artikel atau topik..."
                 required
-                className="w-full h-11 pl-10 pr-24 rounded-control border border-border bg-surface text-ink text-sm placeholder:text-ink/40 focus:outline-none focus:ring-2 focus:ring-brand focus:border-brand transition-all"
+                className="w-full h-11 pl-10 pr-24 rounded-control border border-border bg-surface text-ink text-sm placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-brand focus:border-brand transition-all"
               />
               <button
                 type="submit"

@@ -3,6 +3,9 @@ import type { Metadata } from "next";
 import { Container } from "@/components/ui/Container";
 import { ContactForm } from "@/components/forms/ContactForm";
 import { MapPin, Mail, Phone, Clock, MessageSquare, ShieldCheck } from "lucide-react";
+import { getSiteContact } from "@/lib/sanity/site-settings";
+
+export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: "Hubungi Kami",
@@ -19,7 +22,8 @@ export const metadata: Metadata = {
   },
 };
 
-export default function KontakPage() {
+export default async function KontakPage() {
+  const contact = await getSiteContact();
   return (
     <div className="py-10 sm:py-14 bg-bg min-h-screen">
       <Container>
@@ -53,9 +57,8 @@ export default function KontakPage() {
                   </div>
                   <div className="flex flex-col gap-0.5">
                     <span className="font-semibold text-ink">Alamat Kantor</span>
-                    <span className="text-muted leading-relaxed">
-                      Sekretariat Pemuda ICMI Kota Bekasi<br />
-                      Jl. Ahmad Yani No. 1, Marga Jaya, Kec. Bekasi Selatan, Kota Bekasi, Jawa Barat 17141
+                    <span className="text-muted leading-relaxed whitespace-pre-line">
+                      {contact.address}
                     </span>
                   </div>
                 </div>
@@ -67,12 +70,11 @@ export default function KontakPage() {
                   <div className="flex flex-col gap-0.5">
                     <span className="font-semibold text-ink">Surat Elektronik (Email)</span>
                     <a
-                      href="mailto:kontak@pemudaicmi-kotabekasi.org"
-                      className="text-brand hover:underline font-medium"
+                      href={`mailto:${contact.email}`}
+                      className="text-brand hover:underline font-medium break-all"
                     >
-                      kontak@pemudaicmi-kotabekasi.org
+                      {contact.email}
                     </a>
-                    <span className="text-xs text-muted">Untuk pers & kemitraan: redaksi@pemudaicmi-kotabekasi.org</span>
                   </div>
                 </div>
 
@@ -83,12 +85,12 @@ export default function KontakPage() {
                   <div className="flex flex-col gap-0.5">
                     <span className="font-semibold text-ink">Telepon / WhatsApp</span>
                     <a
-                      href="https://wa.me/6281234567890"
+                      href={`https://wa.me/${contact.phoneDigits}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-brand hover:underline font-medium"
                     >
-                      +62 812-3456-7890
+                      {contact.phone}
                     </a>
                   </div>
                 </div>

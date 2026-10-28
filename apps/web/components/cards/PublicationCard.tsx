@@ -58,7 +58,7 @@ export function PublicationCard({
           href={fileUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="focus-visible:outline-none"
+          className="focus-visible:underline focus-visible:decoration-2 focus-visible:underline-offset-4 focus-visible:text-brand"
         >
           <Button variant="secondary" size="sm" className="gap-1.5 text-xs">
             <Download className="w-3.5 h-3.5" />

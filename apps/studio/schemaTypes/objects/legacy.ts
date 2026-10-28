@@ -14,8 +14,10 @@ export const legacy = defineType({
     defineField({
       name: "bloggerUrl",
       title: "URL Asli Blogger",
-      type: "url",
-      readOnly: true,
+      description:
+        "Opsional. Path/URL artikel di Blogger lama (untuk redirect). Boleh dikosongkan atau diubah.",
+      type: "string",
+      validation: (Rule) => Rule.optional(),
     }),
     defineField({
       name: "importedAt",

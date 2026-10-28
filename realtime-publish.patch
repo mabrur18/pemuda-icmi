@@ -1,0 +1,502 @@
+diff --git a/apps/web/app/api/revalidate/route.ts b/apps/web/app/api/revalidate/route.ts
+index 6419c40..ef93a02 100644
+--- a/apps/web/app/api/revalidate/route.ts
++++ b/apps/web/app/api/revalidate/route.ts
+@@ -1,5 +1,5 @@
+ import { NextRequest, NextResponse } from "next/server";
+-import { revalidateTag } from "next/cache";
++import { revalidatePath, revalidateTag } from "next/cache";
+ import crypto from "crypto";
+ 
+ export const runtime = "nodejs";
+@@ -140,6 +140,12 @@ export async function POST(request: NextRequest) {
+       break;
+   }
+ 
++  // Unpublish/delete events usually arrive without _type or slug, so the tag
++  // mapping above cannot find the affected pages (e.g. post:<slug>). Purge the
++  // whole route cache as well; the site is small, so a full refresh is cheap.
++  revalidatePath("/", "layout");
++  revalidatedTags.push("path:/ (layout)");
++
+   return NextResponse.json({
+     revalidated: true,
+     now: Date.now(),
+diff --git a/apps/web/components/layout/Footer.tsx b/apps/web/components/layout/Footer.tsx
+index 11ccc98..46968dd 100644
+--- a/apps/web/components/layout/Footer.tsx
++++ b/apps/web/components/layout/Footer.tsx
+@@ -1,22 +1,36 @@
+ import React from "react";
+ import Link from "next/link";
++import Image from "next/image";
+ import { Container } from "../ui/Container";
++import { getSiteLogo } from "@/lib/sanity/site-logo";
+ import { Instagram, Youtube, Facebook, Twitter, Mail, MapPin, Phone } from "lucide-react";
+ 
+-export function Footer() {
++export async function Footer() {
++  const logo = await getSiteLogo();
+   return (
+     <footer className="w-full bg-surface border-t border-border mt-auto pt-12 pb-8">
+       <Container>
+         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12 pb-12 border-b border-border">
+           {/* Kolom 1: Profil Organisasi */}
+           <div className="flex flex-col gap-4">
+-            <div className="flex items-center gap-3">
+-              <div className="w-9 h-9 rounded-full bg-brand flex items-center justify-center text-white font-bold text-base shadow-sm">
+-                <span className="text-accent font-extrabold">I</span>
+-                <span>C</span>
++            {logo ? (
++              <Image
++                src={logo.url}
++                alt={logo.alt}
++                width={160}
++                height={36}
++                unoptimized
++                className="h-9 w-auto max-w-[200px] object-contain self-start"
++              />
++            ) : (
++              <div className="flex items-center gap-3">
++                <div className="w-9 h-9 rounded-full bg-brand flex items-center justify-center text-white font-bold text-base shadow-sm">
++                  <span className="text-accent font-extrabold">I</span>
++                  <span>C</span>
++                </div>
++                <span className="font-bold text-lg text-ink">Pemuda ICMI</span>
+               </div>
+-              <span className="font-bold text-lg text-ink">Pemuda ICMI</span>
+-            </div>
++            )}
+             <p className="text-sm text-muted leading-relaxed">
+               Organisasi Daerah Pemuda Ikatan Cendekiawan Muslim se-Indonesia (Pemuda ICMI) Kota Bekasi.
+               Mewadahi cendekia muda dalam kepemimpinan, riset, dan pengabdian umat.
+diff --git a/apps/web/components/layout/Header.tsx b/apps/web/components/layout/Header.tsx
+index 14f5e60..a13c03c 100644
+--- a/apps/web/components/layout/Header.tsx
++++ b/apps/web/components/layout/Header.tsx
+@@ -1,175 +1,9 @@
+-"use client";
+-
+-import React, { useEffect, useState } from "react";
+-import Link from "next/link";
+-import { usePathname } from "next/navigation";
+-import { Menu, X, Search } from "lucide-react";
+-import { Container } from "../ui/Container";
+-import { Button } from "../ui/Button";
+-import { ThemeToggle } from "../ui/ThemeToggle";
+-import { clsx } from "clsx";
+-
+-const navItems = [
+-  { label: "Beranda", href: "/" },
+-  { label: "Berita", href: "/berita" },
+-  { label: "Kegiatan", href: "/kegiatan" },
+-  { label: "Publikasi", href: "/publikasi" },
+-  { label: "Tentang", href: "/tentang-kami" },
+-];
+-
+-export function Header() {
+-  const pathname = usePathname();
+-  const [isScrolled, setIsScrolled] = useState(false);
+-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+-
+-  useEffect(() => {
+-    const handleScroll = () => {
+-      setIsScrolled(window.scrollY > 20);
+-    };
+-
+-    window.addEventListener("scroll", handleScroll, { passive: true });
+-    return () => window.removeEventListener("scroll", handleScroll);
+-  }, []);
+-
+-  // Close mobile menu when route changes
+-  useEffect(() => {
+-    setMobileMenuOpen(false);
+-  }, [pathname]);
+-
+-  return (
+-    <header
+-      className={clsx(
+-        "sticky top-0 z-50 w-full transition-all duration-300 backdrop-blur-md bg-surface/90 border-b border-border",
+-        isScrolled ? "h-14 sm:h-14 shadow-sm" : "h-[72px] sm:h-[72px]"
+-      )}
+-    >
+-      <Container className="h-full flex items-center justify-between">
+-        {/* Brand Logo & Name */}
+-        <Link
+-          href="/"
+-          className="flex items-center gap-3 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand rounded-lg p-1"
+-        >
+-          <div className="w-10 h-10 rounded-full bg-brand flex items-center justify-center text-white font-bold text-lg shadow-sm group-hover:scale-105 transition-transform">
+-            <span className="text-accent font-extrabold">I</span>
+-            <span>C</span>
+-          </div>
+-          <div className="flex flex-col">
+-            <span className="font-bold text-base sm:text-lg leading-tight text-ink group-hover:text-brand transition-colors">
+-              Pemuda ICMI
+-            </span>
+-            <span className="text-[11px] font-medium text-muted tracking-wider uppercase">
+-              Kota Bekasi
+-            </span>
+-          </div>
+-        </Link>
+-
+-        {/* Desktop Navigation */}
+-        <nav className="hidden lg:flex items-center gap-1 xl:gap-2">
+-          {navItems.map((item) => {
+-            const isActive =
+-              item.href === "/"
+-                ? pathname === "/"
+-                : pathname.startsWith(item.href);
+-
+-            return (
+-              <Link
+-                key={item.href}
+-                href={item.href}
+-                className={clsx(
+-                  "px-3.5 py-2 text-sm font-medium rounded-control transition-colors min-h-[44px] flex items-center",
+-                  isActive
+-                    ? "text-brand bg-brand-soft font-semibold"
+-                    : "text-muted hover:text-ink hover:bg-brand-soft/50"
+-                )}
+-              >
+-                {item.label}
+-              </Link>
+-            );
+-          })}
+-        </nav>
+-
+-        {/* Desktop Actions */}
+-        <div className="hidden lg:flex items-center gap-3">
+-          <Link
+-            href="/cari"
+-            className="w-10 h-10 flex items-center justify-center rounded-control text-muted hover:text-ink hover:bg-brand-soft transition-colors"
+-            title="Cari Berita"
+-          >
+-            <Search className="w-4 h-4" />
+-          </Link>
+-
+-          <ThemeToggle />
+-
+-          <Link href="/kegiatan">
+-            <Button variant="accent" size="md">
+-              Daftar Kegiatan
+-            </Button>
+-          </Link>
+-        </div>
+-
+-        {/* Mobile Menu Controls */}
+-        <div className="flex lg:hidden items-center gap-2">
+-          <ThemeToggle />
+-
+-          <button
+-            type="button"
+-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+-            className="min-h-[44px] min-w-[44px] flex items-center justify-center text-ink hover:text-brand rounded-control focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand"
+-            aria-label={mobileMenuOpen ? "Tutup Menu" : "Buka Menu"}
+-          >
+-            {mobileMenuOpen ? (
+-              <X className="w-6 h-6" />
+-            ) : (
+-              <Menu className="w-6 h-6" />
+-            )}
+-          </button>
+-        </div>
+-      </Container>
+-
+-      {/* Mobile Drawer */}
+-      {mobileMenuOpen && (
+-        <div className="lg:hidden fixed inset-x-0 top-[100%] bg-surface border-b border-border shadow-xl px-4 py-6 transition-all animate-in fade-in slide-in-from-top-4">
+-          <nav className="flex flex-col gap-2">
+-            {navItems.map((item) => {
+-              const isActive =
+-                item.href === "/"
+-                  ? pathname === "/"
+-                  : pathname.startsWith(item.href);
+-
+-              return (
+-                <Link
+-                  key={item.href}
+-                  href={item.href}
+-                  className={clsx(
+-                    "px-4 py-3 text-base font-medium rounded-control transition-colors flex items-center min-h-[44px]",
+-                    isActive
+-                      ? "text-brand bg-brand-soft font-semibold"
+-                      : "text-ink hover:bg-brand-soft/50"
+-                  )}
+-                >
+-                  {item.label}
+-                </Link>
+-              );
+-            })}
+-
+-            <Link
+-              href="/cari"
+-              className="px-4 py-3 text-base font-medium text-ink hover:bg-brand-soft/50 rounded-control flex items-center gap-2 min-h-[44px]"
+-            >
+-              <Search className="w-4 h-4" />
+-              <span>Pencarian Artikel</span>
+-            </Link>
+-
+-            <div className="pt-4 border-t border-border mt-2">
+-              <Link href="/kegiatan" className="block w-full">
+-                <Button variant="accent" size="lg" className="w-full">
+-                  Daftar Kegiatan
+-                </Button>
+-              </Link>
+-            </div>
+-          </nav>
+-        </div>
+-      )}
+-    </header>
+-  );
++import React from "react";
++import { getSiteLogo } from "@/lib/sanity/site-logo";
++import { HeaderClient } from "./HeaderClient";
++
++/** Server wrapper: fetches the Sanity logo, then hands it to the client header. */
++export async function Header() {
++  const logo = await getSiteLogo();
++  return <HeaderClient logo={logo} />;
+ }
+diff --git a/apps/web/components/layout/HeaderClient.tsx b/apps/web/components/layout/HeaderClient.tsx
+new file mode 100644
+index 0000000..9a2acf0
+--- /dev/null
++++ b/apps/web/components/layout/HeaderClient.tsx
+@@ -0,0 +1,194 @@
++"use client";
++
++import React, { useEffect, useState } from "react";
++import Link from "next/link";
++import Image from "next/image";
++import { usePathname } from "next/navigation";
++import { Menu, X, Search } from "lucide-react";
++import { Container } from "../ui/Container";
++import { Button } from "../ui/Button";
++import { ThemeToggle } from "../ui/ThemeToggle";
++import { clsx } from "clsx";
++import type { SiteLogo } from "@/lib/sanity/site-logo";
++
++const navItems = [
++  { label: "Beranda", href: "/" },
++  { label: "Berita", href: "/berita" },
++  { label: "Kegiatan", href: "/kegiatan" },
++  { label: "Publikasi", href: "/publikasi" },
++  { label: "Tentang", href: "/tentang-kami" },
++];
++
++export function HeaderClient({ logo }: { logo: SiteLogo | null }) {
++  const pathname = usePathname();
++  const [isScrolled, setIsScrolled] = useState(false);
++  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
++
++  useEffect(() => {
++    const handleScroll = () => {
++      setIsScrolled(window.scrollY > 20);
++    };
++
++    window.addEventListener("scroll", handleScroll, { passive: true });
++    return () => window.removeEventListener("scroll", handleScroll);
++  }, []);
++
++  // Close mobile menu when route changes
++  useEffect(() => {
++    setMobileMenuOpen(false);
++  }, [pathname]);
++
++  return (
++    <header
++      className={clsx(
++        "sticky top-0 z-50 w-full transition-all duration-300 backdrop-blur-md bg-surface/90 border-b border-border",
++        isScrolled ? "h-14 sm:h-14 shadow-sm" : "h-[72px] sm:h-[72px]"
++      )}
++    >
++      <Container className="h-full flex items-center justify-between">
++        {/* Brand Logo & Name */}
++        <Link
++          href="/"
++          className="flex items-center gap-3 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand rounded-lg p-1"
++        >
++          {logo ? (
++            <>
++              <Image
++                src={logo.url}
++                alt={logo.alt}
++                width={160}
++                height={40}
++                priority
++                unoptimized
++                className="h-10 w-auto max-w-[200px] object-contain"
++              />
++              <span className="sr-only">Pemuda ICMI Kota Bekasi</span>
++            </>
++          ) : (
++            <>
++              <div className="w-10 h-10 rounded-full bg-brand flex items-center justify-center text-white font-bold text-lg shadow-sm group-hover:scale-105 transition-transform">
++                <span className="text-accent font-extrabold">I</span>
++                <span>C</span>
++              </div>
++              <div className="flex flex-col">
++                <span className="font-bold text-base sm:text-lg leading-tight text-ink group-hover:text-brand transition-colors">
++                  Pemuda ICMI
++                </span>
++                <span className="text-[11px] font-medium text-muted tracking-wider uppercase">
++                  Kota Bekasi
++                </span>
++              </div>
++            </>
++          )}
++        </Link>
++
++        {/* Desktop Navigation */}
++        <nav className="hidden lg:flex items-center gap-1 xl:gap-2">
++          {navItems.map((item) => {
++            const isActive =
++              item.href === "/"
++                ? pathname === "/"
++                : pathname.startsWith(item.href);
++
++            return (
++              <Link
++                key={item.href}
++                href={item.href}
++                className={clsx(
++                  "px-3.5 py-2 text-sm font-medium rounded-control transition-colors min-h-[44px] flex items-center",
++                  isActive
++                    ? "text-brand bg-brand-soft font-semibold"
++                    : "text-muted hover:text-ink hover:bg-brand-soft/50"
++                )}
++              >
++                {item.label}
++              </Link>
++            );
++          })}
++        </nav>
++
++        {/* Desktop Actions */}
++        <div className="hidden lg:flex items-center gap-3">
++          <Link
++            href="/cari"
++            className="w-10 h-10 flex items-center justify-center rounded-control text-muted hover:text-ink hover:bg-brand-soft transition-colors"
++            title="Cari Berita"
++          >
++            <Search className="w-4 h-4" />
++          </Link>
++
++          <ThemeToggle />
++
++          <Link href="/kegiatan">
++            <Button variant="accent" size="md">
++              Daftar Kegiatan
++            </Button>
++          </Link>
++        </div>
++
++        {/* Mobile Menu Controls */}
++        <div className="flex lg:hidden items-center gap-2">
++          <ThemeToggle />
++
++          <button
++            type="button"
++            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
++            className="min-h-[44px] min-w-[44px] flex items-center justify-center text-ink hover:text-brand rounded-control focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand"
++            aria-label={mobileMenuOpen ? "Tutup Menu" : "Buka Menu"}
++          >
++            {mobileMenuOpen ? (
++              <X className="w-6 h-6" />
++            ) : (
++              <Menu className="w-6 h-6" />
++            )}
++          </button>
++        </div>
++      </Container>
++
++      {/* Mobile Drawer */}
++      {mobileMenuOpen && (
++        <div className="lg:hidden fixed inset-x-0 top-[100%] bg-surface border-b border-border shadow-xl px-4 py-6 transition-all animate-in fade-in slide-in-from-top-4">
++          <nav className="flex flex-col gap-2">
++            {navItems.map((item) => {
++              const isActive =
++                item.href === "/"
++                  ? pathname === "/"
++                  : pathname.startsWith(item.href);
++
++              return (
++                <Link
++                  key={item.href}
++                  href={item.href}
++                  className={clsx(
++                    "px-4 py-3 text-base font-medium rounded-control transition-colors flex items-center min-h-[44px]",
++                    isActive
++                      ? "text-brand bg-brand-soft font-semibold"
++                      : "text-ink hover:bg-brand-soft/50"
++                  )}
++                >
++                  {item.label}
++                </Link>
++              );
++            })}
++
++            <Link
++              href="/cari"
++              className="px-4 py-3 text-base font-medium text-ink hover:bg-brand-soft/50 rounded-control flex items-center gap-2 min-h-[44px]"
++            >
++              <Search className="w-4 h-4" />
++              <span>Pencarian Artikel</span>
++            </Link>
++
++            <div className="pt-4 border-t border-border mt-2">
++              <Link href="/kegiatan" className="block w-full">
++                <Button variant="accent" size="lg" className="w-full">
++                  Daftar Kegiatan
++                </Button>
++              </Link>
++            </div>
++          </nav>
++        </div>
++      )}
++    </header>
++  );
++}
+diff --git a/apps/web/lib/sanity/site-logo.ts b/apps/web/lib/sanity/site-logo.ts
+new file mode 100644
+index 0000000..2bbac33
+--- /dev/null
++++ b/apps/web/lib/sanity/site-logo.ts
+@@ -0,0 +1,36 @@
++import { sanityFetch } from "./fetch";
++import { SITE_SETTINGS_QUERY } from "./queries";
++import { urlForImage } from "./image";
++
++export interface SiteLogo {
++  url: string;
++  alt: string;
++}
++
++/**
++ * Reads the organisation logo from siteSettings (tag "siteSettings", so the
++ * Sanity webhook refreshes it right after publish). Returns null when no logo
++ * is set or Sanity is unreachable; callers then render the built-in fallback.
++ */
++export async function getSiteLogo(): Promise<SiteLogo | null> {
++  try {
++    const settings = await sanityFetch<{
++      siteName?: string;
++      logo?: { asset?: unknown; alt?: string } | null;
++    } | null>({
++      query: SITE_SETTINGS_QUERY,
++      tags: ["siteSettings"],
++    });
++
++    if (!settings?.logo?.asset) return null;
++
++    return {
++      url: urlForImage(settings.logo as Parameters<typeof urlForImage>[0])
++        .height(160)
++        .url(),
++      alt: settings.logo.alt || settings.siteName || "Pemuda ICMI Kota Bekasi",
++    };
++  } catch {
++    return null;
++  }
++}
